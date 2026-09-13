@@ -36,7 +36,9 @@ function getOsAgentDescription(platformName: string): string {
 export const Tool_ExecuteCommand = tool({
 	description:
 		"Executes a command by sending a string to the terminal of the user. Do not use interactive commands, such as text editors, or sudo. " +
-		getOsAgentDescription(os.platform()),
+		getOsAgentDescription(os.platform()) +
+		". The temporary folder that can be used for scratch files is " +
+		os.tmpdir(),
 	inputSchema: z.object({
 		cmd: z.string().describe("The command CANNOT be any interactive commands, including sudo."),
 		timeout: z.number().int().min(1).max(60).default(10).describe("Timeout in seconds."),
