@@ -7,7 +7,6 @@ export async function toolApproval(
 	sessionController: SessionController,
 	toolRegistry: ToolRegistry,
 ): Promise<{ type: "approved" | "denied"; reason: string }> {
-
 	const tool = toolRegistry.getToolsMap().get(toolCall.toolName);
 	if (tool && !tool.needsApproval) {
 		return { type: "approved", reason: "tool does not require approval" };
@@ -29,11 +28,11 @@ export async function toolApproval(
 		);
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	} catch (e) {
-		return { type: "denied", reason: "unable to interept approval answer" };
+		return { type: "denied", reason: "Approval Errored! Assuming denied!" };
 	}
 
 	if (approval.approved)
-		return { type: "approved", reason: approval.reason ? approval.reason : "unable to extract reason" };
+		return { type: "approved", reason: approval.reason ? approval.reason : "Unable to extract reason!" };
 
-	return { type: "denied", reason: approval.reason ? approval.reason : "unable to extract reason" };
+	return { type: "denied", reason: approval.reason ? approval.reason : "Unable to extract reason!" };
 }
