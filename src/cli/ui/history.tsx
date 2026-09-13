@@ -6,6 +6,10 @@ import { ForegroundColorName } from "chalk";
 import { JSONAttemptStringify } from "../../shared/jsonAttemptStringify.js";
 import { CheckpointEntryTypes } from "../../shared/checkpoints/checkpointTypes.js";
 
+function sanitizeAndTruncate(text: unknown, truncation: number = 100) {
+	return truncate(String(text).replace(/[\p{Cc}]/gu, " "), truncation);
+}
+
 function toolEntryFactory(
 	index: number,
 	checkpoint: Extract<CheckpointEntryTypes, { type: "tool" }>,
@@ -14,21 +18,24 @@ function toolEntryFactory(
 	let resultText: string = "";
 	switch (checkpoint.status) {
 		case "done":
-			resultText = `\n\r  ╰─── ${truncate(JSONAttemptStringify(checkpoint.result), 500)}`;
+			resultText = `${sanitizeAndTruncate(JSONAttemptStringify(checkpoint.result))}`;
 			break;
 		case "error":
-			resultText = `\n\r  ╰─── Error message: "${(JSON.parse(checkpoint.result) as Error).message}"`;
+			resultText = `Error message: "${sanitizeAndTruncate((JSON.parse(checkpoint.result) as Error).message)}"`;
 			break;
 		case "rejected":
-			resultText = `\n\r  ╰─── Security Rejection: "${checkpoint.result}"`;
+			resultText = `Security Rejection: "${sanitizeAndTruncate(checkpoint.result)}"`;
 			break;
 	}
 	return (
-		<Box key={index} marginBottom={1}>
-			<Text color={color}>
-				{`⬤ ${checkpoint.toolName}(${truncate(JSON.stringify(checkpoint.arguments), 500)})`}
+		<Box key={index} flexDirection="column" marginBottom={1}>
+			<Box>
+				<Text color={color}>{"⬤"}</Text>
+				<Text>{sanitizeAndTruncate(` ${checkpoint.toolName}(${JSON.stringify(checkpoint.arguments)})`)}</Text>
+			</Box>
+			<Text>
+				{resultText !== "" ? "  ╰───" : ""} {resultText}
 			</Text>
-			<Text>{resultText}</Text>
 		</Box>
 	);
 }

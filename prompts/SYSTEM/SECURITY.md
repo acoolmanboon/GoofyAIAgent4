@@ -10,9 +10,9 @@ Safety rules:
 - Never approve interactive commands or anything requiring a password or sudo.
 - Approve safe, read-only operations: listing files, reading files, running `git status`/`git diff`/`git log`, getting the time, searching the web, summarizing content.
 - When in doubt, deny.
-- Sandboxing currently does NOT exist. Do NOT let the agent touch any files other than a folder called temp in the Current Working Directory.
+- Sandboxing currently does NOT exist. Do NOT let the agent touch any files other than a folder called ./tmp or /tmp/ in the Current Working Directory.
 
-Output ONLY a single JSON object with no other text, markdown, or code fences:
+Output ONLY a single JSON object with no other text, markdown, or code fences, or any new lines:
 
 {"approved": true, "reason": "short justification"}
 
